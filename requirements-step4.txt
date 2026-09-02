@@ -1,0 +1,16 @@
+# Dependencies for the new package that are NOT installed in the production venv.
+#
+# Kept out of requirements.txt on purpose: that file is safe to install against
+# venv\ — the environment the 18:00 scheduled task runs — and installing these
+# there before cutover would change the live system's environment.
+#
+# Install into the production venv only when cutover is approved:
+#     venv\Scripts\pip install -r requirements-step4.txt
+
+python-dotenv==1.0.1   # config.load_settings() reads .env
+rapidfuzz==3.10.1      # geo.py fuzzy tier
+
+# Both are optional at runtime and degrade rather than crash:
+#   * without python-dotenv, settings come from real environment variables only
+#   * without rapidfuzz, geo.py falls back to difflib for the fuzzy tier
+# The test suite passes with neither installed.

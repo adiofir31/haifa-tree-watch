@@ -1,0 +1,34 @@
+alias,canonical
+# Collapses the legacy street->neighbourhood table's names onto the names used
+# by the municipal GIS polygon layer, so one physical area never appears under
+# two spellings in the same Telegram message.
+#
+# Left column: the name as it comes out of the legacy table.
+# Right column: the name to use. Leave the right column EMPTY to drop the row
+# from the index entirely (used for road corridors, which are not places).
+#
+# Several Haifa neighbourhood names contain a comma, so quote those fields.
+# Add rows as you spot them in the QA report. Lines starting with # are ignored.
+הדר,הדר מרכז
+הדר מרכז - התיאטרון העירוני,הדר מרכז
+המושבה הגרמנית,מושבה גרמנית
+קרית אליעזר,קריית אליעזר
+עיר תחתית,"עיר תחתית מזרח, ואדי סאליב"
+עיר תחתית מזרח,"עיר תחתית מזרח, ואדי סאליב"
+ואדי סאליב,"עיר תחתית מזרח, ואדי סאליב"
+חיפה אל עתיקה,"עיר תחתית מזרח, ואדי סאליב"
+אל עתיקה,"עיר תחתית מזרח, ואדי סאליב"
+א.ת. חוף שמן,"צומת הקריות, חוף שמן"
+מפרץ חיפה,אזור תעשיה מפרץ
+הקישון,אזור תעשיה מפרץ
+כרמל מרכזי,כרמל מרכזי- שד' קיש
+"מרכז הקונגרסים, נאות פרס",נאות פרס
+נאות פרס ב',נאות פרס
+# --- road corridors: not neighbourhoods, drop them -------------------------
+ציר ורדיה - דרך רופין,
+"ציר חוף כרמל - מת""ם",
+# --- kept as-is: new areas with no polygon in the municipal layer ----------
+# גבעת זמר
+# יצחק נבון
+# נאות פרס
+# מבואות דרומיים

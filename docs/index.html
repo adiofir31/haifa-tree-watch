@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>רישיונות כריתת עצים בחיפה</title>
+<meta name="description" content="נתוני רישיונות כריתת עצים בחיפה, מטבלת הבקשות של העירייה וממערכת יעלה של משרד החקלאות.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F4;
+  --panel:#FFFFFF;
+  --ink:#17201B;
+  --muted:#5C6660;
+  --canopy:#2E5B3E;
+  --cut:#9C3F26;
+  --cut-wash:#9C3F2618;
+  --sage:#7E9C84;
+  --rule:#D9DED5;
+  --focus:#2E5B3E;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:400 16px/1.55 "Heebo","Segoe UI",system-ui,sans-serif;
+  font-feature-settings:"tnum" 1;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+
+/* ---- masthead ---- */
+header{border-bottom:1px solid var(--rule);margin-bottom:28px}
+.masthead{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;padding:34px 0 20px}
+h1{
+  font:700 34px/1.15 "Frank Ruhl Libre",Georgia,serif;
+  margin:0;letter-spacing:-.01em;
+}
+.stamp{color:var(--muted);font-size:13px}
+
+/* ---- headline figures ---- */
+.figures{display:flex;flex-wrap:wrap;gap:38px;padding:6px 0 22px}
+.figure .n{
+  font:500 40px/1 "Frank Ruhl Libre",Georgia,serif;
+  color:var(--cut);display:block;
+}
+.figure.quiet .n{color:var(--canopy)}
+.figure .l{font-size:13px;color:var(--muted);display:block;margin-top:4px}
+
+/* ---- timeline ---- */
+.timeline{background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:18px 18px 10px}
+.timeline h2,.block h2{font:500 17px/1.3 "Frank Ruhl Libre",Georgia,serif;margin:0 0 2px}
+.hint{font-size:13px;color:var(--muted);margin:0 0 14px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.bar{fill:var(--cut)}
+.bar:hover{fill:var(--ink)}
+.axis{font-size:11px;fill:var(--muted)}
+.gridline{stroke:var(--rule);stroke-width:1}
+
+/* ---- controls ---- */
+.controls{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;
+  padding:22px 0;margin:26px 0 0;border-top:1px solid var(--rule);
+}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;color:var(--muted)}
+select,button{
+  font:400 15px "Heebo",system-ui,sans-serif;color:var(--ink);
+  background:var(--panel);border:1px solid var(--rule);border-radius:3px;
+  padding:7px 10px;min-width:150px;
+}
+button{cursor:pointer;min-width:0;border-color:var(--canopy);color:var(--canopy)}
+button:hover{background:var(--canopy);color:var(--paper)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* ---- multi-select ---- */
+.multi{position:relative}
+.multi>.toggle{
+  min-width:170px;text-align:start;border-color:var(--rule);color:var(--ink);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.multi>.toggle:hover{background:var(--panel);color:var(--ink);border-color:var(--canopy)}
+.multi>.toggle[aria-expanded="true"]{border-color:var(--canopy)}
+.multi>.toggle .caret{color:var(--muted);font-size:11px}
+.panel{
+  position:absolute;top:calc(100% + 5px);inset-inline-start:0;z-index:20;
+  width:max(240px,100%);background:var(--panel);border:1px solid var(--canopy);
+  border-radius:3px;box-shadow:0 6px 20px #17201B14;padding:8px;
+}
+.panel[hidden]{display:none}
+.panel .search{width:100%;min-width:0;margin-bottom:6px}
+.panel .actions{display:flex;gap:14px;padding:2px 6px 8px;border-bottom:1px solid var(--rule)}
+.panel .actions button{
+  border:0;background:none;padding:0;font-size:13px;color:var(--canopy);
+  text-decoration:underline;text-underline-offset:2px;min-width:0;
+}
+.panel .actions button:hover{background:none;color:var(--cut)}
+.options{max-height:260px;overflow:auto;margin-top:6px}
+.options label{
+  display:flex;gap:9px;align-items:center;padding:5px 6px;border-radius:2px;
+  font-size:15px;cursor:pointer;
+}
+.options label:hover{background:#2E5B3E0D}
+.options input{accent-color:var(--canopy);margin:0;flex:none}
+.options .none{color:var(--muted);font-size:14px;padding:8px 6px}
+.chosen{font-size:13px;color:var(--muted);padding-top:8px;width:100%}
+
+/* ---- ranked tables, magnitude drawn in the row ---- */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:30px}
+.block{background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:18px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{
+  text-align:right;font-weight:500;font-size:12px;color:var(--muted);
+  padding:0 8px 7px;border-bottom:1px solid var(--rule);
+}
+th.num,td.num{text-align:left;width:1%;white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--rule);position:relative}
+tbody tr:last-child td{border-bottom:0}
+.name{position:relative;z-index:1}
+.meter{
+  /* Grows from the reading edge: inline-start is the right in RTL, so the bar
+     starts where the name starts instead of running against the text. */
+  position:absolute;inset-block:0;inset-inline-start:0;
+  background:var(--cut-wash);border-inline-end:2px solid var(--cut);z-index:0;
+}
+td.num{font-variant-numeric:tabular-nums}
+.sub{color:var(--muted);font-size:13px}
+.empty{color:var(--muted);padding:22px 8px}
+
+/* ---- footer ---- */
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--rule);
+  font-size:14px;color:var(--muted);line-height:1.7}
+footer a{color:var(--canopy)}
+footer h3{font:500 15px "Frank Ruhl Libre",Georgia,serif;color:var(--ink);margin:18px 0 4px}
+
+@media (max-width:760px){
+  .grid{grid-template-columns:1fr}
+  h1{font-size:26px}
+  .figure .n{font-size:32px}
+  .figures{gap:24px}
+  select{min-width:120px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="masthead">
+    <h1>רישיונות כריתת עצים בחיפה</h1>
+    <span class="stamp" id="stamp"></span>
+  </div>
+</header>
+
+<main>
+  <div class="figures" id="figures"></div>
+
+  <section class="timeline">
+    <h2>לפי חודש</h2>
+    <p class="hint" id="timelineHint"></p>
+    <div id="chart"></div>
+  </section>
+
+  <div class="controls">
+    <div class="field">
+      <label id="lblYear">שנים</label>
+      <div class="multi" id="fYear"></div>
+    </div>
+    <div class="field">
+      <label id="lblNeigh">שכונות</label>
+      <div class="multi" id="fNeigh"></div>
+    </div>
+    <div class="field">
+      <label for="fSource">מקור</label>
+      <select id="fSource">
+        <option value="">שני המקורות</option>
+        <option value="yeela">מערכת יעלה</option>
+        <option value="haifa_pdf">טבלת העירייה</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="fAction">פעולה</label>
+      <select id="fAction">
+        <option value="fell">כריתה</option>
+        <option value="relocate">העתקה</option>
+        <option value="preserve">שימור</option>
+      </select>
+    </div>
+    <button id="export">הורדת הנתונים המסוננים</button>
+  </div>
+
+  <div class="grid">
+    <section class="block">
+      <h2>שכונות</h2>
+      <p class="hint">לפי מספר עצים</p>
+      <table><thead><tr><th>שכונה</th><th class="num">עצים</th><th class="num">רישיונות</th></tr></thead>
+      <tbody id="tNeigh"></tbody></table>
+    </section>
+
+    <section class="block">
+      <h2>רחובות</h2>
+      <p class="hint">עשרים המובילים</p>
+      <table><thead><tr><th>רחוב</th><th class="num">עצים</th><th class="num">רישיונות</th></tr></thead>
+      <tbody id="tStreet"></tbody></table>
+    </section>
+  </div>
+
+  <section class="block" style="margin-top:26px">
+    <h2>הרישיונות הגדולים</h2>
+    <p class="hint">עשרים הרישיונות עם מספר העצים הגבוה ביותר</p>
+    <table><thead><tr><th>כתובת</th><th>שכונה</th><th>מבקש</th><th class="num">עצים</th><th class="num">תאריך</th></tr></thead>
+    <tbody id="tBig"></tbody></table>
+  </section>
+
+  <section class="block" style="margin-top:26px">
+    <h2>מיני העצים</h2>
+    <p class="hint">חמישה־עשר המינים הנפוצים</p>
+    <table><thead><tr><th>מין</th><th class="num">עצים</th></tr></thead>
+    <tbody id="tSpecies"></tbody></table>
+  </section>
+</main>
+
+<footer>
+  <p>הנתונים נאספים אוטומטית פעם ביום משני מקורות רשמיים: טבלת בקשות הכריתה
+  באתר עיריית חיפה, ומערכת <a href="https://yeela-trees.moag.gov.il/FoPublic/FoLicence">יעלה</a>
+  של משרד החקלאות. השיוך לשכונה נעשה מול שכבות הכתובות, החלקות והשכונות של חיפה.</p>
+
+  <h3>איך לקרוא את המספרים</h3>
+  <p>רישיון אינו כריתה שבוצעה. חלק ניכר מהרישיונות מותנים בהיתר בנייה שטרם ניתן,
+  ולכן המספרים כאן הם רישיונות שאושרו ולא עצים שנכרתו בפועל. מנגד, לא כל כריתה
+  מחייבת רישיון — עצים מתחת לסף הקוטר ומינים פטורים אינם מופיעים כאן כלל.</p>
+  <p>שני המקורות מתארכים דברים שונים: טבלת העירייה לפי מועד הגשת הבקשה, יעלה לפי
+  מועד אישור הרישיון. אין לסכם ביניהם — אותה כריתה עשויה להופיע בשניהם.</p>
+
+  <h3>שימוש בנתונים</h3>
+  <p>כפתור ההורדה מייצא את מה שמסונן כרגע כקובץ CSV.</p>
+</footer>
+
+</div>
+
+<script>
+const RAW = /*__STATS_DATA__*/null;
+
+const SOURCE_LABEL = {yeela:"מערכת יעלה", haifa_pdf:"טבלת העירייה"};
+const ACTION_LABEL = {fell:"כריתה", relocate:"העתקה", preserve:"שימור"};
+const DATE_LABEL   = {approved:"מועד אישור הרישיון", requested:"מועד הגשת הבקשה"};
+const MONTHS = ["ינו","פבר","מרץ","אפר","מאי","יונ","יול","אוג","ספט","אוק","נוב","דצמ"];
+const NO_NEIGH = "ללא שיוך";
+
+let DATA = [];
+const el = id => document.getElementById(id);
+const num = n => n.toLocaleString("he-IL");
+
+async function boot(){
+  let payload = RAW;
+  if(!payload){
+    try{
+      const res = await fetch("data/stats.json", {cache:"no-cache"});
+      if(!res.ok) throw new Error(res.status);
+      payload = await res.json();
+    }catch(err){
+      el("chart").innerHTML =
+        '<p class="empty">לא נמצא קובץ הנתונים. הריצו <code>python tools/build_stats.py</code> ' +
+        'כדי לייצר את <code>docs/data/stats.json</code>.</p>';
+      return;
+    }
+  }
+  DATA = payload.records || [];
+  el("stamp").textContent =
+    "עודכן " + hebDate(payload.generated) + " · " + num(DATA.length) + " רישיונות";
+  buildFilters();
+  ["fSource","fAction"].forEach(id =>
+    el(id).addEventListener("change", render));
+  el("export").addEventListener("click", exportCsv);
+  render();
+}
+
+function hebDate(iso){
+  if(!iso) return "";
+  const [y,m,d] = iso.split("-");
+  return d ? `${+d}.${+m}.${y}` : iso;
+}
+
+/* ------------------------------------------------------------ multi-select
+
+   One control for years and neighbourhoods. A native <select multiple> forces
+   ctrl-clicking and hides the choice on touch, so this is a button that says
+   what is selected and a panel of checkboxes. Shift-click extends a range,
+   which is how you pick a run of years.
+   ------------------------------------------------------------------------ */
+
+function createMulti(host, opts){
+  const items = opts.items;
+  const chosen = new Set();
+  let lastIndex = null;
+
+  host.innerHTML = `
+    <button type="button" class="toggle" aria-expanded="false" aria-haspopup="true">
+      <span class="summary"></span><span class="caret" aria-hidden="true">▾</span>
+    </button>
+    <div class="panel" hidden>
+      ${opts.searchable ? '<input class="search" type="search" placeholder="' + opts.searchLabel + '">' : ''}
+      <div class="actions">
+        <button type="button" data-act="all">בחירת הכול</button>
+        <button type="button" data-act="none">ניקוי</button>
+      </div>
+      <div class="options" role="group"></div>
+    </div>`;
+
+  const toggle  = host.querySelector(".toggle");
+  const panel   = host.querySelector(".panel");
+  const list    = host.querySelector(".options");
+  const search  = host.querySelector(".search");
+  const summary = host.querySelector(".summary");
+  toggle.setAttribute("aria-labelledby", opts.labelId);
+
+  function describe(){
+    if(chosen.size === 0 || chosen.size === items.length) return opts.allLabel;
+    if(chosen.size <= 2) return [...chosen].sort(opts.sort).join(", ");
+    return chosen.size + " " + opts.unit;
+  }
+
+  function paint(){
+    const q = (search && search.value.trim()) || "";
+    const shown = q ? items.filter(v => v.includes(q)) : items;
+    list.innerHTML = shown.length
+      ? shown.map(v => `<label><input type="checkbox" value="${esc(v)}"${
+          chosen.has(v) ? " checked" : ""}><span>${esc(v)}</span></label>`).join("")
+      : '<p class="none">אין התאמה.</p>';
+    summary.textContent = describe();
+  }
+
+  // Update the boxes in place. Rebuilding the list on every click would throw
+  // away the scroll position, which matters with 76 neighbourhoods.
+  function syncBoxes(){
+    list.querySelectorAll("input[type=checkbox]").forEach(box => {
+      box.checked = chosen.has(box.value);
+    });
+    summary.textContent = describe();
+  }
+
+  list.addEventListener("click", ev => {
+    const box = ev.target.closest("input[type=checkbox]");
+    if(!box) return;
+    const index = items.indexOf(box.value);
+    if(ev.shiftKey && lastIndex !== null && index !== -1){
+      const [a,b] = [Math.min(lastIndex,index), Math.max(lastIndex,index)];
+      const on = box.checked;
+      for(let i=a;i<=b;i++) on ? chosen.add(items[i]) : chosen.delete(items[i]);
+      syncBoxes();
+    } else {
+      box.checked ? chosen.add(box.value) : chosen.delete(box.value);
+      summary.textContent = describe();
+    }
+    if(index !== -1) lastIndex = index;
+    opts.onChange();
+  });
+
+  host.querySelectorAll(".actions button").forEach(b =>
+    b.addEventListener("click", () => {
+      chosen.clear();
+      if(b.dataset.act === "all") items.forEach(v => chosen.add(v));
+      lastIndex = null;
+      syncBoxes();
+      opts.onChange();
+    }));
+
+  if(search) search.addEventListener("input", paint);
+
+  function open(state){
+    panel.hidden = !state;
+    toggle.setAttribute("aria-expanded", String(state));
+    if(state && search){ search.value = ""; paint(); search.focus(); }
+  }
+  toggle.addEventListener("click", () => open(panel.hidden));
+  document.addEventListener("click", ev => {
+    if(!host.contains(ev.target) && !panel.hidden) open(false);
+  });
+  host.addEventListener("keydown", ev => {
+    if(ev.key === "Escape" && !panel.hidden){ open(false); toggle.focus(); }
+  });
+
+  paint();
+  // An empty set means "everything", so no filter is applied until one is made.
+  return {selected: () => chosen};
+}
+
+let yearPicker, neighPicker;
+
+function buildFilters(){
+  const years = [...new Set(DATA.map(r => r.date && r.date.slice(0,4)).filter(Boolean))]
+    .sort().reverse();
+  yearPicker = createMulti(el("fYear"), {
+    items: years, labelId: "lblYear", allLabel: "כל השנים", unit: "שנים",
+    sort: (a,b) => b.localeCompare(a), onChange: render,
+  });
+
+  const neighs = [...new Set(DATA.map(r => r.neighborhood || NO_NEIGH))]
+    .sort((a,b) => a.localeCompare(b,"he"));
+  neighPicker = createMulti(el("fNeigh"), {
+    items: neighs, labelId: "lblNeigh", allLabel: "כל השכונות", unit: "שכונות",
+    searchable: true, searchLabel: "חיפוש שכונה",
+    sort: (a,b) => a.localeCompare(b,"he"), onChange: render,
+  });
+}
+
+function filters(){
+  return {years:yearPicker.selected(), neighs:neighPicker.selected(),
+          source:el("fSource").value, action:el("fAction").value};
+}
+
+function selected(){
+  const f = filters();
+  return DATA.filter(r =>
+    (r[f.action] || 0) > 0 &&
+    (f.years.size  === 0 || f.years.has((r.date || "").slice(0,4))) &&
+    (f.neighs.size === 0 || f.neighs.has(r.neighborhood || NO_NEIGH)) &&
+    (!f.source || r.source === f.source));
+}
+
+function yearTag(years){
+  if(years.size === 0) return "all";
+  const sorted = [...years].sort();
+  if(sorted.length === 1) return sorted[0];
+  const span = +sorted[sorted.length-1] - +sorted[0] + 1;
+  return span === sorted.length ? sorted[0] + "-" + sorted[sorted.length-1]
+                                : sorted.length + "years";
+}
+
+function label(r){
+  if(r.street) return r.street + (r.house ? " " + r.house : "");
+  if(r.block)  return "גוש " + r.block + (r.parcel ? " חלקה " + r.parcel : "");
+  return "ללא כתובת";
+}
+
+function esc(s){
+  return String(s ?? "").replace(/[&<>"']/g,
+    c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* ---------------------------------------------------------------- render */
+
+function render(){
+  const f = filters(), rows = selected();
+  const key = f.action;
+  const trees = rows.reduce((a,r) => a + (r[key] || 0), 0);
+  const dated = rows.filter(r => r.date).map(r => r.date).sort();
+
+  el("figures").innerHTML = `
+    <div class="figure"><span class="n">${num(trees)}</span>
+      <span class="l">עצים ל${ACTION_LABEL[key]}</span></div>
+    <div class="figure quiet"><span class="n">${num(rows.length)}</span>
+      <span class="l">רישיונות</span></div>
+    <div class="figure quiet"><span class="n">${num(
+        new Set(rows.map(r => r.neighborhood || NO_NEIGH)).size)}</span>
+      <span class="l">שכונות</span></div>
+    <div class="figure quiet"><span class="n" style="font-size:22px;line-height:1.7">${
+        dated.length ? hebDate(dated[0]) + " – " + hebDate(dated[dated.length-1]) : "—"
+      }</span><span class="l">טווח התאריכים</span></div>`;
+
+  const kinds = [...new Set(rows.map(r => r.date_kind))].map(k => DATE_LABEL[k] || k);
+  el("timelineHint").textContent = kinds.length
+    ? "מקובץ לפי " + kinds.join(", ") : "";
+
+  drawTimeline(rows, key);
+  rankTable("tNeigh",  rows, key, r => r.neighborhood || NO_NEIGH, 200);
+  rankTable("tStreet", rows, key, r => r.street || (r.block ? "גוש " + r.block : "ללא כתובת"), 20);
+  bigTable(rows, key);
+  speciesTable(rows, key);
+}
+
+function drawTimeline(rows, key){
+  const buckets = new Map();
+  rows.forEach(r => {
+    if(!r.date) return;
+    const m = r.date.slice(0,7);
+    buckets.set(m, (buckets.get(m) || 0) + (r[key] || 0));
+  });
+  const months = [...buckets.keys()].sort();
+  if(!months.length){
+    el("chart").innerHTML = '<p class="empty">אין נתונים לתקופה שנבחרה.</p>';
+    return;
+  }
+
+  // Fill the gaps so an empty month reads as zero, not as absent.
+  const series = [];
+  let [y, m] = months[0].split("-").map(Number);
+  const [ly, lm] = months[months.length-1].split("-").map(Number);
+  while(y < ly || (y === ly && m <= lm)){
+    const stampKey = `${y}-${String(m).padStart(2,"0")}`;
+    series.push({key:stampKey, y, m, v:buckets.get(stampKey) || 0});
+    if(++m > 12){ m = 1; y++; }
+  }
+
+  const W = 1000, H = 240, padTop = 14, padBottom = 34, padSide = 34;
+  const max = Math.max(...series.map(d => d.v), 1);
+  const plot = H - padTop - padBottom;
+  const step = (W - padSide*2) / series.length;
+  const barW = Math.max(1.5, Math.min(step * 0.72, 26));
+  const ticks = [0, Math.round(max/2), max];
+  const showEvery = Math.ceil(series.length / 26);
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="עצים לפי חודש">`;
+  ticks.forEach(t => {
+    const yy = padTop + plot - (t/max)*plot;
+    svg += `<line class="gridline" x1="${padSide}" x2="${W-padSide}" y1="${yy}" y2="${yy}"/>`
+        +  `<text class="axis" x="${W-padSide+6}" y="${yy+4}">${num(t)}</text>`;
+  });
+  series.forEach((d,i) => {
+    const h = (d.v/max) * plot;
+    const x = padSide + i*step + (step-barW)/2;
+    svg += `<rect class="bar" x="${x.toFixed(1)}" y="${(padTop+plot-h).toFixed(1)}" `
+        +  `width="${barW.toFixed(1)}" height="${Math.max(h,d.v?1:0).toFixed(1)}">`
+        +  `<title>${MONTHS[d.m-1]} ${d.y} — ${num(d.v)} עצים</title></rect>`;
+    if(i % showEvery === 0){
+      const lbl = (d.m === 1 || i === 0) ? `${MONTHS[d.m-1]} ${d.y}` : MONTHS[d.m-1];
+      svg += `<text class="axis" text-anchor="middle" x="${(x+barW/2).toFixed(1)}" `
+          +  `y="${H-padBottom+18}">${lbl}</text>`;
+    }
+  });
+  el("chart").innerHTML = svg + "</svg>";
+}
+
+function rankTable(id, rows, key, keyOf, limit){
+  const agg = new Map();
+  rows.forEach(r => {
+    const k = keyOf(r);
+    const cur = agg.get(k) || {trees:0, count:0};
+    cur.trees += r[key] || 0; cur.count += 1;
+    agg.set(k, cur);
+  });
+  const list = [...agg.entries()].sort((a,b) => b[1].trees - a[1].trees).slice(0, limit);
+  if(!list.length){
+    el(id).innerHTML = '<tr><td class="empty" colspan="3">אין נתונים.</td></tr>';
+    return;
+  }
+  const max = list[0][1].trees || 1;
+  el(id).innerHTML = list.map(([name,v]) => `
+    <tr>
+      <td><span class="meter" style="width:${(v.trees/max*100).toFixed(1)}%"></span>
+          <span class="name">${esc(name)}</span></td>
+      <td class="num">${num(v.trees)}</td>
+      <td class="num sub">${num(v.count)}</td>
+    </tr>`).join("");
+}
+
+function bigTable(rows, key){
+  const list = [...rows].sort((a,b) => (b[key]||0) - (a[key]||0)).slice(0,20);
+  if(!list.length){
+    el("tBig").innerHTML = '<tr><td class="empty" colspan="5">אין נתונים.</td></tr>';
+    return;
+  }
+  el("tBig").innerHTML = list.map(r => `
+    <tr>
+      <td>${esc(label(r))}</td>
+      <td class="sub">${esc(r.neighborhood || NO_NEIGH)}</td>
+      <td class="sub">${esc(r.applicant || "—")}</td>
+      <td class="num">${num(r[key] || 0)}</td>
+      <td class="num sub">${hebDate(r.date)}</td>
+    </tr>`).join("");
+}
+
+function speciesTable(rows, key){
+  if(key !== "fell"){
+    el("tSpecies").innerHTML =
+      '<tr><td class="empty" colspan="2">פירוט המינים זמין עבור כריתה בלבד.</td></tr>';
+    return;
+  }
+  const agg = new Map();
+  rows.forEach(r => Object.entries(r.species || {}).forEach(([name,n]) =>
+    agg.set(name, (agg.get(name)||0) + n)));
+  const list = [...agg.entries()].sort((a,b) => b[1]-a[1]).slice(0,15);
+  if(!list.length){
+    el("tSpecies").innerHTML = '<tr><td class="empty" colspan="2">אין נתונים.</td></tr>';
+    return;
+  }
+  const max = list[0][1] || 1;
+  el("tSpecies").innerHTML = list.map(([name,n]) => `
+    <tr>
+      <td><span class="meter" style="width:${(n/max*100).toFixed(1)}%"></span>
+          <span class="name">${esc(name)}</span></td>
+      <td class="num">${num(n)}</td>
+    </tr>`).join("");
+}
+
+function exportCsv(){
+  const rows = selected(), f = filters();
+  const head = ["מקור","תאריך","סוג התאריך","שכונה","רחוב","בית","גוש","חלקה",
+                "כריתה","העתקה","שימור","מינים","מבקש","תאריך אחרון להשגה"];
+  const cell = v => {
+    const s = String(v ?? "");
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  };
+  const body = rows.map(r => [
+    SOURCE_LABEL[r.source] || r.source, r.date || "", DATE_LABEL[r.date_kind] || "",
+    r.neighborhood || "", r.street || "", r.house || "", r.block || "", r.parcel || "",
+    r.fell, r.relocate, r.preserve,
+    Object.entries(r.species || {}).map(([k,v]) => v > 1 ? `${k} (${v})` : k).join("; "),
+    r.applicant || "", r.appeal_last || "",
+  ].map(cell).join(","));
+
+  // BOM so Excel opens the Hebrew correctly.
+  const blob = new Blob(["\uFEFF" + head.join(",") + "\n" + body.join("\n")],
+                        {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = ["haifa-trees", f.action, yearTag(f.years),
+                new Date().toISOString().slice(0,10)].join("-") + ".csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+boot();
+</script>
+</body>
+</html>

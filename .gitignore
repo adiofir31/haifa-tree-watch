@@ -1,0 +1,31 @@
+# secrets
+.env
+
+# environments
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# runtime state and output — never commit; state.jsonl is irreplaceable locally
+data/state.jsonl
+data/unmatched.csv
+*.log
+logs/
+
+# everything we carried over but are not porting, including a 21 MB reference PDF
+_archive/
+data/backups/
+
+# editors
+.idea/
+.vscode/
+
+# input layers for the index builders — large, regenerable, see README
+data/raw/
+
+# generated dashboard output
+tree_stats.html
+
+# any copy of the state file
+data/state.jsonl*
