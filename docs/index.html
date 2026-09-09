@@ -34,7 +34,18 @@ body{
 
 /* ---- masthead ---- */
 header{border-bottom:1px solid var(--rule);margin-bottom:28px}
-.masthead{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;padding:34px 0 20px}
+.masthead{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:30px 0 18px}
+.masthead .logo{height:96px;width:auto;flex:none}
+.masthead .titles{flex:1;min-width:240px}
+.channel{
+  display:inline-flex;align-items:center;gap:7px;text-decoration:none;flex:none;
+  font-size:14px;color:var(--canopy);border:1px solid var(--canopy);
+  border-radius:3px;padding:7px 13px;
+}
+.channel:hover{background:var(--canopy);color:var(--paper)}
+.about{font-size:15px;line-height:1.7;max-width:66ch;margin:0}
+.about p{margin:0 0 10px}
+.about p:last-child{margin-bottom:0}
 h1{
   font:700 34px/1.15 "Frank Ruhl Libre",Georgia,serif;
   margin:0;letter-spacing:-.01em;
@@ -130,6 +141,43 @@ td.num{font-variant-numeric:tabular-nums}
 .sub{color:var(--muted);font-size:13px}
 .empty{color:var(--muted);padding:22px 8px}
 
+/* ---- action groups ---- */
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:14px}
+.groups.single{grid-template-columns:1fr}
+.groups.single .group{padding:18px 20px}
+.groups.single h3{font-size:19px}
+.groups.single .areas{font-size:15px;color:var(--ink);max-width:60ch}
+.group{
+  border:1px solid var(--rule);border-radius:3px;padding:14px;
+  display:flex;flex-direction:column;gap:7px;background:var(--paper);
+}
+.group h3{font:500 16px "Frank Ruhl Libre",Georgia,serif;margin:0}
+.group .areas{font-size:13px;color:var(--muted);line-height:1.5;flex:1}
+.group a.join{
+  align-self:flex-start;text-decoration:none;font-size:14px;
+  border:1px solid var(--canopy);color:var(--canopy);border-radius:3px;padding:6px 12px;
+}
+.group a.join:hover{background:var(--canopy);color:var(--paper)}
+.joinlink{font-size:13px;color:var(--canopy);text-decoration:underline;text-underline-offset:2px}
+
+/* ---- contact ---- */
+form.contact{display:grid;gap:12px;max-width:560px;margin-top:14px}
+form.contact label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
+form.contact input,form.contact textarea,form.contact select{
+  width:100%;font:400 15px "Heebo",system-ui,sans-serif;color:var(--ink);
+  background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:8px 10px;
+}
+form.contact textarea{min-height:110px;resize:vertical}
+/* The form is a grid, so justify-self is what controls the inline axis here. */
+form.contact button{justify-self:start;padding:9px 20px}
+.notice{font-size:13px;color:var(--muted);line-height:1.6;max-width:560px;margin:10px 0 0}
+.formstate{font-size:14px;padding-top:6px}
+.formstate.ok{color:var(--canopy)}
+.formstate.bad{color:var(--cut)}
+/* Honeypot. Offsetting it off-screen would add 9999px of horizontal scroll
+   in an RTL document, where overflow runs the other way. */
+.hp{display:none}
+
 /* ---- footer ---- */
 footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--rule);
   font-size:14px;color:var(--muted);line-height:1.7}
@@ -151,8 +199,19 @@ footer h3{font:500 15px "Frank Ruhl Libre",Georgia,serif;color:var(--ink);margin
 
 <header>
   <div class="masthead">
-    <h1>רישיונות כריתת עצים בחיפה</h1>
-    <span class="stamp" id="stamp"></span>
+    <!-- ✏️ לוגו: שמרו קובץ בשם logo.png בתיקיית docs/ והסירו את ההערה מהשורה הבאה.
+         אם אין לוגו, השאירו כמו שזה. -->
+    <img class="logo" src="logo.png" alt="">
+
+    <div class="titles">
+      <h1>רישיונות כריתת עצים בחיפה</h1>          <!-- ✏️ כותרת -->
+      <span class="stamp" id="stamp"></span>
+    </div>
+
+    <!-- ✏️ קישור לערוץ הטלגרם. החליפו את הכתובת בכתובת הערוץ שלכם. -->
+    <a class="channel" href="https://t.me/+BU-0P_0ts4IwZWM1" target="_blank" rel="noopener">
+      🌳 לקבלת התראה יומית בטלגרם
+    </a>
   </div>
 </header>
 
@@ -222,6 +281,60 @@ footer h3{font:500 15px "Frank Ruhl Libre",Georgia,serif;color:var(--ink);margin
     <table><thead><tr><th>מין</th><th class="num">עצים</th></tr></thead>
     <tbody id="tSpecies"></tbody></table>
   </section>
+  <!-- ✏️ מי אנחנו — כל הטקסט כאן חופשי לעריכה -->
+  <section class="block" style="margin-top:26px" id="about">
+    <h2>מי אנחנו</h2>
+    <p class="about">
+      <span>כתבו כאן מי עומד מאחורי הפרויקט, למה הוא נבנה, ומה אתם מבקשים
+      מהעירייה. שתיים־שלוש פסקאות מספיקות.</span>
+    </p>
+  </section>
+
+  <section class="block" style="margin-top:26px" id="groups">
+    <h2>קבוצת פעולה</h2>
+    <p class="hint">תושבים שמתריעים זה לזה, מסייעים בהגשת השגות ופועלים יחד</p>
+    <div class="groups" id="groupList"></div>
+    <p class="notice">
+      שימו לב שבקבוצת וואטסאפ מספר הטלפון שלכם גלוי לשאר חברי הקבוצה. מי שמעדיף
+      לקבל עדכונים בלבד, בלי להיחשף ובלי דיון, מוזמן לערוץ הטלגרם. ככל שיצטרפו
+      יותר אנשים הקבוצה תתפצל לפי אזורים.
+    </p>
+  </section>
+
+  <section class="block" style="margin-top:26px" id="contact">
+    <h2>יצירת קשר</h2>
+    <p class="hint">שאלה, תיקון לנתונים או רצון להצטרף לפעילות - כתבו לנו</p>
+    <form class="contact" id="contactForm">
+      <input type="hidden" name="access_key" value="894d8970-d583-4980-aaed-f1d3b9c04f5b">
+      <input type="hidden" name="subject" value="פנייה מאתר כריתת עצים בחיפה">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
+      <div>
+        <label for="cName">שם</label>
+        <input id="cName" name="name" type="text" autocomplete="name" required>
+      </div>
+      <div>
+        <label for="cArea">שכונה או אזור</label>
+        <input id="cArea" name="area" type="text" list="neighList" autocomplete="off">
+        <datalist id="neighList"></datalist>
+      </div>
+      <div>
+        <label for="cEmail">דוא״ל</label>
+        <input id="cEmail" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div>
+        <label for="cMsg">הודעה</label>
+        <textarea id="cMsg" name="message" required></textarea>
+      </div>
+      <button type="submit">שליחה</button>
+      <p class="formstate" id="formState" role="status" aria-live="polite"></p>
+    </form>
+    <p class="notice">
+      הפרטים נשלחים אליי (עדי אופיר) בלבד ומשמשים כדי לחזור אליכם ולעדכן על פעילות באזור שלכם.
+      המסירה וולונטרית ואינכם חייבים בה על פי דין. הפרטים אינם נמסרים לאף גורם אחר
+      ואינם משמשים לפרסום. אפשר לבקש מחיקה בכל עת באותה כתובת.
+    </p>
+  </section>
+
 </main>
 
 <footer>
@@ -236,11 +349,53 @@ footer h3{font:500 15px "Frank Ruhl Libre",Georgia,serif;color:var(--ink);margin
   <p>שני המקורות מתארכים דברים שונים: טבלת העירייה לפי מועד הגשת הבקשה, יעלה לפי
   מועד אישור הרישיון. אין לסכם ביניהם — אותה כריתה עשויה להופיע בשניהם.</p>
 
+  <h3>התראה יומית</h3>
+  <p>כל רישיון חדש מתפרסם באותו יום ב<a href="https://t.me/+BU-0P_0ts4IwZWM1">ערוץ הטלגרם</a>,
+  מקובץ לפי שכונה, עם התאריך האחרון להגשת השגה.</p>
+
   <h3>שימוש בנתונים</h3>
   <p>כפתור ההורדה מייצא את מה שמסונן כרגע כקובץ CSV.</p>
+
+  <h3>פרטיות</h3>
+  <p>האתר אינו משתמש בקוקיז ואינו אוסף מידע אישי על הגולשים. הסינון, החישוב
+  והייצוא קורים כולם בדפדפן שלכם — שום דבר ממה שאתם מסננים אינו נשלח לשום מקום.
+  ספירת הכניסות מצטברת בלבד, ללא מזהים אישיים. פרטים שאתם מזינים בטופס יצירת
+  הקשר נשלחים אליי בלבד.</p>
+
+  <p id="visits" hidden></p>
 </footer>
 
 </div>
+
+<!-- ---------------------------------------------------------------------------
+     Visitor counting: GoatCounter. No cookies, no personal identifiers, nothing
+     stored in the browser — it sends one request per pageview and that is all.
+     Replace MYCODE below with the code from your goatcounter.com site, or
+     delete both script tags to turn counting off entirely.
+     --------------------------------------------------------------------------- -->
+<script data-goatcounter="https://adiofir.goatcounter.com/count"
+        async src="https://gc.zgo.at/count.js"></script>
+
+<script>
+// Show the running total in the footer. Optional, and needs "Allow adding
+// visitor counts on your website" switched on in the GoatCounter settings —
+// it is off by default. If it is off, or the request fails, the line simply
+// stays hidden rather than showing a broken counter.
+(async () => {
+  const site = document.querySelector("[data-goatcounter]")?.dataset.goatcounter || "";
+  const base = site.replace(/\/count$/, "");
+  if (!base || base.includes("MYCODE")) return;
+  try {
+    const res = await fetch(base + "/counter/TOTAL.json");
+    if (!res.ok) return;
+    const { count } = await res.json();
+    if (!count) return;
+    const node = document.getElementById("visits");
+    node.textContent = `נצפה ${count} פעמים מאז פתיחת האתר.`;
+    node.hidden = false;
+  } catch { /* counting is a nicety; never let it disturb the page */ }
+})();
+</script>
 
 <script>
 const RAW = /*__STATS_DATA__*/null;
@@ -250,6 +405,34 @@ const ACTION_LABEL = {fell:"כריתה", relocate:"העתקה", preserve:"שימ
 const DATE_LABEL   = {approved:"מועד אישור הרישיון", requested:"מועד הגשת הבקשה"};
 const MONTHS = ["ינו","פבר","מרץ","אפר","מאי","יונ","יול","אוג","ספט","אוק","נוב","דצמ"];
 const NO_NEIGH = "ללא שיוך";
+
+/* ------------------------------------------------------------ action groups
+
+   Edit this list by hand. `neighborhoods` must use the exact names that appear
+   in the neighbourhood table, so a "join" link can be shown on the right row.
+   Leave `url` empty and the card still appears, marked as forming — which is
+   how you find out whether an area has anyone in it before opening a group.
+
+   WhatsApp invite links look like https://chat.whatsapp.com/XXXXXXXX and can be
+   reset from the group settings if one leaks somewhere you did not intend.
+   ------------------------------------------------------------------------ */
+const GROUPS = [
+  {
+    name: "קבוצת הפעולה לעצי חיפה",
+    url: "",                       // https://chat.whatsapp.com/XXXXXXXX
+    blurb: "קבוצת וואטסאפ אחת לכל העיר. ההצטרפות באישור מנהל — " +
+           "בקשה מגיעה אליי ואני מאשר.",
+    neighborhoods: [],             // empty = the whole city
+  },
+];
+
+/* Splitting into regional groups later needs no code change: add entries with
+   their own `url` and fill `neighborhoods` with names exactly as they appear in
+   the neighbourhood table. With more than one group the section becomes a grid
+   of cards and a "join" link appears on the matching table rows. */
+const REGIONAL = GROUPS.length > 1;
+const GROUP_OF = new Map();
+if (REGIONAL) GROUPS.forEach(g => g.neighborhoods.forEach(n => GROUP_OF.set(n, g)));
 
 let DATA = [];
 const el = id => document.getElementById(id);
@@ -273,6 +456,8 @@ async function boot(){
   el("stamp").textContent =
     "עודכן " + hebDate(payload.generated) + " · " + num(DATA.length) + " רישיונות";
   buildFilters();
+  buildGroups();
+  buildContact();
   ["fSource","fAction"].forEach(id =>
     el(id).addEventListener("change", render));
   el("export").addEventListener("click", exportCsv);
@@ -442,6 +627,49 @@ function esc(s){
     c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 
+function buildGroups(){
+  const host = el("groupList");
+  host.classList.toggle("single", !REGIONAL);
+  host.innerHTML = GROUPS.map(g => {
+    const action = g.url
+      ? `<a class="join" href="${esc(g.url)}" target="_blank" rel="noopener">הצטרפות לקבוצה</a>`
+      : `<a class="join" href="#contact">הקבוצה בהקמה — כתבו לי</a>`;
+    const areas = g.blurb
+      ? esc(g.blurb)
+      : g.neighborhoods.map(esc).join(" · ");
+    return `<div class="group">
+      <h3>${esc(g.name)}</h3>
+      <p class="areas">${areas}</p>
+      ${action}</div>`;
+  }).join("");
+}
+
+function buildContact(){
+  const list = [...new Set(DATA.map(r => r.neighborhood).filter(Boolean))]
+    .sort((a,b) => a.localeCompare(b,"he"));
+  el("neighList").innerHTML = list.map(n => `<option value="${esc(n)}">`).join("");
+
+  const form = el("contactForm"), state = el("formState");
+  form.addEventListener("submit", async ev => {
+    ev.preventDefault();
+    state.className = "formstate";
+    state.textContent = "שולח…";
+    try{
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method:"POST", body:new FormData(form),
+      });
+      const out = await res.json();
+      if(!out.success) throw new Error(out.message || "failed");
+      state.className = "formstate ok";
+      state.textContent = "נשלח, תודה. אחזור אליכם.";
+      form.reset();
+    }catch(err){
+      state.className = "formstate bad";
+      state.textContent = "השליחה נכשלה. אפשר לכתוב ישירות לכתובת שבתחתית העמוד.";
+    }
+  });
+}
+
 /* ---------------------------------------------------------------- render */
 
 function render(){
@@ -539,13 +767,19 @@ function rankTable(id, rows, key, keyOf, limit){
     return;
   }
   const max = list[0][1].trees || 1;
-  el(id).innerHTML = list.map(([name,v]) => `
+  el(id).innerHTML = list.map(([name,v]) => {
+    const group = id === "tNeigh" ? GROUP_OF.get(name) : null;
+    const join = group && group.url
+      ? ` <a class="joinlink" href="${esc(group.url)}" target="_blank" rel="noopener"
+             title="קבוצת ${esc(group.name)}">הצטרפו</a>` : "";
+    return `
     <tr>
       <td><span class="meter" style="width:${(v.trees/max*100).toFixed(1)}%"></span>
-          <span class="name">${esc(name)}</span></td>
+          <span class="name">${esc(name)}${join}</span></td>
       <td class="num">${num(v.trees)}</td>
       <td class="num sub">${num(v.count)}</td>
-    </tr>`).join("");
+    </tr>`;
+  }).join("");
 }
 
 function bigTable(rows, key){
