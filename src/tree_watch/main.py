@@ -28,6 +28,8 @@ log = logging.getLogger(__name__)
 
 ACTION_LINKS = (
     "🔗 <b>קישורים ומידע נוסף:</b>\n\n"
+    "📊 <a href='https://adiofir31.github.io/haifa-tree-watch/'>"
+    "כל הנתונים ההיסטוריים — לפי שכונה, רחוב ושנה</a>\n\n"
     "📋 <a href='{pdf}'>לטבלה המלאה באתר העירייה</a>\n\n"
     "🌳 <a href='https://yeela-trees.moag.gov.il/FoPublic/FoLicence'>"
     "מערכת יעלה (משרד החקלאות)</a>\n"
