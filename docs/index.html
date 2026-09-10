@@ -163,13 +163,21 @@ td.num{font-variant-numeric:tabular-nums}
 /* ---- contact ---- */
 form.contact{display:grid;gap:12px;max-width:560px;margin-top:14px}
 form.contact label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
-form.contact input,form.contact textarea,form.contact select{
+/* :not([type=checkbox]) keeps this off the opt-in box. Overriding it from
+   .optin input would not work — this selector has higher specificity. */
+form.contact input:not([type=checkbox]),form.contact textarea,form.contact select{
   width:100%;font:400 15px "Heebo",system-ui,sans-serif;color:var(--ink);
   background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:8px 10px;
 }
 form.contact textarea{min-height:110px;resize:vertical}
 /* The form is a grid, so justify-self is what controls the inline axis here. */
+/* The form is a grid, so justify-self is what controls the inline axis here. */
 form.contact button{justify-self:start;padding:9px 20px}
+.optin{display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.5}
+.optin input{accent-color:var(--canopy);margin:3px 0 0;flex:none}
+.optin span{color:var(--ink)}
+.terms{font-size:13px;color:var(--muted);line-height:1.6;margin:0}
+.terms a{color:var(--canopy)}
 .notice{font-size:13px;color:var(--muted);line-height:1.6;max-width:560px;margin:10px 0 0}
 .formstate{font-size:14px;padding-top:6px}
 .formstate.ok{color:var(--canopy)}
@@ -308,6 +316,10 @@ footer h3{font:500 15px "Frank Ruhl Libre",Georgia,serif;color:var(--ink);margin
     <form class="contact" id="contactForm">
       <input type="hidden" name="access_key" value="894d8970-d583-4980-aaed-f1d3b9c04f5b">
       <input type="hidden" name="subject" value="פנייה מאתר כריתת עצים בחיפה">
+      <!-- Submitted with the form so the email itself carries the record of
+           which terms were accepted, and when. -->
+      <input type="hidden" name="terms_accepted"
+             value="תנאי השימוש של רוב העיר — https://www.rovhaifa.org/terms-and-conditions">
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
       <div>
         <label for="cName">שם</label>
@@ -326,13 +338,28 @@ footer h3{font:500 15px "Frank Ruhl Libre",Georgia,serif;color:var(--ink);margin
         <label for="cMsg">הודעה</label>
         <textarea id="cMsg" name="message" required></textarea>
       </div>
+      <!-- ✏️ הסכמה לקבלת עדכונים. הסירו את כל הבלוק אם אינכם רוצים אותה.
+           הערך נשלח יחד עם הטופס, כך שיש לכם תיעוד למי אישר ומי לא. -->
+      <label class="optin">
+        <input type="checkbox" name="updates" value="כן, מסכים.ה לקבל עדכונים">
+        <span>אשמח לקבל עדכונים על פעילות באזור שלי.
+        אפשר לבטל בכל עת.</span>
+      </label>
+
       <button type="submit">שליחה</button>
+
+      <!-- ✏️ תנאי השימוש -->
+      <p class="terms">
+        בשליחת הטופס אני מסכים.ה
+        <a href="https://www.rovhaifa.org/terms-and-conditions"
+           target="_blank" rel="noopener">לתנאי השימוש</a>.
+      </p>
+
       <p class="formstate" id="formState" role="status" aria-live="polite"></p>
     </form>
     <p class="notice">
-      הפרטים נשלחים אליי (עדי אופיר) בלבד ומשמשים כדי לחזור אליכם ולעדכן על פעילות באזור שלכם.
-      המסירה וולונטרית ואינכם חייבים בה על פי דין. הפרטים אינם נמסרים לאף גורם אחר
-      ואינם משמשים לפרסום. אפשר לבקש מחיקה בכל עת באותה כתובת.
+      הפרטים נשלחים אליי (עדי אופיר) ומשמשים כדי לחזור אליכם ולעדכן על פעילות באזור שלכם.
+      המסירה וולונטרית ואינכם חייבים בה על פי דין. אפשר לבקש מחיקה בכל עת באותה כתובת.
     </p>
   </section>
 
